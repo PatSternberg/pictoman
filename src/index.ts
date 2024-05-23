@@ -1,28 +1,10 @@
 import express from 'express';
-import cors from 'cors';
 import bodyParser from 'body-parser';
 import path from 'path';
 import fs from 'fs';
 
 const app = express();
 const port = 3000;
-
-// Define the allowed origins
-const allowedOrigins = ['https://localhost:3000', 'http://localhost:3000', 'https://pictoman.onrender.com', 'http://pictoman.onrender.com'];
-
-const corsOptions: cors.CorsOptions = {
-  origin: (origin, callback) => {
-    // Check if the origin is in the allowedOrigins array
-    if (allowedOrigins.indexOf(origin as string) !== -1 || !origin) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-};
-
-// Use the CORS middleware with the options
-app.use(cors(corsOptions));
 
 // Store correct user guesses in array
 let correctLetters: string[] = [];
