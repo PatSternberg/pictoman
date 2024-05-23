@@ -34,8 +34,8 @@ function readWordsFromFile(filePath) {
         return [];
     }
 }
-// Endpoint to handle user input
-app.post('/guess', (req, res) => {
+// Endpoint to handle user letter guess
+app.post('/guess-letter', (req, res) => {
     const userGuess = req.body.message.toLowerCase();
     let result = `No, that's not right`;
     if (!userGuess || userGuess.length !== 1) {
@@ -49,6 +49,22 @@ app.post('/guess', (req, res) => {
         }
     }
     res.send({ response: result, correctLetters: correctLetters });
+});
+// Endpoint to handle user letter guess
+app.post('/guess-word', (req, res) => {
+    const userGuess = req.body.message.toLowerCase();
+    console.log(userGuess);
+    let result = `No, that's not the right word`;
+    if (!userGuess) {
+        result = `Guess a word`;
+    }
+    else {
+        // Check if the user's guessed letter is in the word
+        if (randomWord === userGuess) {
+            result = `Well done! That's the correct word.`;
+        }
+    }
+    res.send({ response: result });
 });
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);
