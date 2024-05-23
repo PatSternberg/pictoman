@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Message App</title>
+  <title>Pictoman</title>
 </head>
 <body>
-  <h1>Message App</h1>
+  <h1>Pictoman</h1>
   <form id="messageForm">
-    <label for="message">Enter your message:</label>
+    <label for="message">Enter your guess:</label>
     <input type="text" id="message" name="message" required>
     <button type="submit">Send</button>
   </form>
   <div id="response"></div>
+  <div id="correctLetters"></div>
 
   <script>
     document.getElementById('messageForm').addEventListener('submit', function(event) {
@@ -20,7 +21,7 @@
 
       const message = document.getElementById('message').value;
 
-      fetch('http://localhost:3000/message', {
+      fetch('http://localhost:3000/guess', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -30,6 +31,7 @@
       .then(response => response.json())
       .then(data => {
         document.getElementById('response').innerText = data.response;
+        document.getElementById('correctLetters').innerText = `Correct letters: ${data.correctLetters.join(', ')}`;
       })
       .catch(error => {
         console.error('Error:', error);

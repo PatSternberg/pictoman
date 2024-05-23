@@ -9,6 +9,16 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const app = (0, express_1.default)();
 const port = 3000;
+// Store correct user guesses in array
+const correctLetters = [];
+// Get a random word for the user to guess
+// Read words from the file
+const wordsFilePath = path_1.default.join(__dirname, '../public/words.txt');
+const words = readWordsFromFile(wordsFilePath);
+// Get a random word from the file and make it all lower case
+const randomNum = Math.floor(Math.random() * words.length);
+const randomWord = words[randomNum].toLowerCase();
+console.log(randomWord, typeof randomWord);
 // Middleware to parse JSON bodies
 app.use(body_parser_1.default.json());
 // Serve static files from the "public" directory
@@ -25,17 +35,20 @@ function readWordsFromFile(filePath) {
     }
 }
 // Endpoint to handle user input
-app.post('/message', (req, res) => {
-    const userMessage = req.body.message;
-    if (!userMessage) {
-        return res.status(400).send({ error: 'Message is required' });
+app.post('/guess', (req, res) => {
+    const userGuess = req.body.message.toLowerCase();
+    let result = `No, that's not right`;
+    if (!userGuess || userGuess.length !== 1) {
+        result = `Guess a single letter`;
     }
-    // Read words from the file
-    const wordsFilePath = path_1.default.join(__dirname, '../public/words.txt');
-    const words = readWordsFromFile(wordsFilePath);
-    // Check if user message matches any word
-    const isMatch = words.includes(userMessage);
-    res.send({ response: isMatch ? 'Match found!' : 'No match found.' });
+    else {
+        // Check if the user's guessed letter is in the word
+        if (randomWord.includes(userGuess)) {
+            correctLetters.push(userGuess.toUpperCase());
+            result = `Well done! That's correct.`;
+        }
+    }
+    res.send({ response: result, correctLetters: correctLetters });
 });
 app.listen(port, () => {
     console.log(`Server is running at http://localhost:${port}`);

@@ -6,6 +6,19 @@ import fs from 'fs';
 const app = express();
 const port = 3000;
 
+// Store correct user guesses in array
+const correctLetters: string[] = [];
+
+// Get a random word for the user to guess
+// Read words from the file
+const wordsFilePath = path.join(__dirname, '../public/words.txt');
+const words = readWordsFromFile(wordsFilePath);
+
+// Get a random word from the file and make it all lower case
+const randomNum = Math.floor(Math.random() * words.length);
+const randomWord: string = words[randomNum].toLowerCase();
+console.log(randomWord, typeof randomWord);
+
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
@@ -24,21 +37,19 @@ function readWordsFromFile(filePath: string): string[] {
 }
 
 // Endpoint to handle user input
-app.post('/message', (req, res) => {
-  const userMessage = req.body.message;
-
-  if (!userMessage) {
-    return res.status(400).send({ error: 'Message is required' });
+app.post('/guess', (req, res) => {
+  const userGuess: string = req.body.message.toLowerCase();
+  let result = `No, that's not right`;
+  if (!userGuess || userGuess.length !== 1) {
+    result = `Guess a single letter`;
+  } else {
+    // Check if the user's guessed letter is in the word
+    if (randomWord.includes(userGuess)) {
+      correctLetters.push(userGuess.toUpperCase());
+      result = `Well done! That's correct.`;
+    }
   }
-
-  // Read words from the file
-  const wordsFilePath = path.join(__dirname, '../public/words.txt');
-  const words = readWordsFromFile(wordsFilePath);
-
-  // Check if user message matches any word
-  const isMatch = words.includes(userMessage);
-
-  res.send({ response: isMatch ? 'Match found!' : 'No match found.' });
+  res.send({ response: result, correctLetters: correctLetters });
 });
 
 app.listen(port, () => {
