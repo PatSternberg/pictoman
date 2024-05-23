@@ -8,6 +8,7 @@
 </head>
 <body>
   <div class="display">
+    <div id="hostname"></div>
     <div class="title">
       <img src="logo.png" alt="Logo">
       <h1>ictoman</h1>
@@ -32,12 +33,18 @@
     <div class="response" id="wordGuessResponse"></div>
 
     <script>
+      const host = window.location.host;
+      document.getElementById('hostname').innerText = host;
+    </script>
+
+    <script>
       document.getElementById('letterGuessForm').addEventListener('submit', function(event) {
         event.preventDefault();
 
         const message = document.getElementById('letterGuess').value;
+        const host = window.location.host;
 
-        fetch('http://localhost:3000/guess-letter', {
+        fetch(`http://${host}/guess-letter`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -60,8 +67,9 @@
         event.preventDefault();
 
         const message = document.getElementById('wordGuess').value;
+        const host = window.location.host;
 
-        fetch('http://localhost:3000/guess-word', {
+        fetch(`http://${host}/guess-word`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
