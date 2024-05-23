@@ -1,10 +1,28 @@
 import express from 'express';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import path from 'path';
 import fs from 'fs';
 
 const app = express();
 const port = 3000;
+
+// Define the allowed origins
+const allowedOrigins = ['https://localhost:3000', 'http://localhost:3000', 'https://pictoman.onrender.com/', 'http://pictoman.onrender.com/'];
+
+const corsOptions: cors.CorsOptions = {
+  origin: (origin, callback) => {
+    // Check if the origin is in the allowedOrigins array
+    if (allowedOrigins.indexOf(origin as string) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+};
+
+// Use the CORS middleware with the options
+app.use(cors(corsOptions));
 
 // Store correct user guesses in array
 let correctLetters: string[] = [];
@@ -17,7 +35,8 @@ const words = readWordsFromFile(wordsFilePath);
 // Get a random word from the file and make it all lower case
 let randomNum = Math.floor(Math.random() * words.length);
 let randomWord: string = words[randomNum].toLowerCase();
-console.log(randomWord, typeof randomWord);
+console.log(`Word to guess is`);
+console.log(randomWord);
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
@@ -69,14 +88,15 @@ app.post('/guess-word', (req, res) => {
       let newRandomWord: string = words[randomNum].toLowerCase();
       // Check that the new word is different and reroll if not
       while (newRandomWord === randomWord) {
-        console.log(`"New word is the same"`);
+        console.log(`"New word is the same:"`);
         console.log(newRandomWord, randomWord);
         randomNum = Math.floor(Math.random() * words.length);
         newRandomWord = words[randomNum].toLowerCase();
       }
       // Set the new word to the newly generated word
       randomWord = newRandomWord;
-      console.log(randomWord, typeof randomWord);
+      console.log(`Word to guess is`);
+      console.log(randomWord);
     }
   }
   res.send({ response: result, correctLetters: [] });
