@@ -8,7 +8,7 @@ const app = express();
 const port = 3000;
 
 // Define the allowed origins
-const allowedOrigins = ['https://localhost:3000', 'http://localhost:3000', 'https://pictoman.onrender.com/', 'http://pictoman.onrender.com/'];
+const allowedOrigins = ['https://localhost:3000', 'http://localhost:3000', 'https://pictoman.onrender.com', 'http://pictoman.onrender.com'];
 
 const corsOptions: cors.CorsOptions = {
   origin: (origin, callback) => {
