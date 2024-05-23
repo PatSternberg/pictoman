@@ -2,6 +2,8 @@
 
 Pictoman is a multiplayer word guessing game which combines hangman and pictionary.
 
+Pictoman is built with Typescript and HTML. It has no backend and the library of words is stored in `/pictoman/public/words.txt`. You can create Pictoman for differnt langauges by updating this file with new words.
+
 ## Running Pictoman
 
 To play Pictoman, `cd` to `/pictoman` and run `npm start`.
