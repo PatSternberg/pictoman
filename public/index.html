@@ -8,6 +8,7 @@
 </head>
 <body>
   <div class="display">
+    <div id="hostname"></div>
     <div class="title">
       <img src="logo.png" alt="Logo">
       <h1>ictoman</h1>
@@ -15,7 +16,7 @@
     <form class="input-box" id="letterGuessForm">
       <label for="letterGuess">Enter your guess:</label>
       <input type="text" id="letterGuess" name="letterGuess" required>
-      <button type="submit">Send</button>
+      <button type="submit">Submit</button>
     </form>
     <div class="response" id="letterGuessResponse"></div>
     <div class=correct-letters-box>
@@ -27,7 +28,7 @@
     <form class="input-box" id="wordGuessForm">
       <label for="wordGuess">Guess the word:</label>
       <input type="text" id="wordGuess" name="wordGuess" required>
-      <button type="submit">Send</button>
+      <button type="submit">Submit</button>
     </form>
     <div class="response" id="wordGuessResponse"></div>
 
@@ -36,8 +37,9 @@
         event.preventDefault();
 
         const message = document.getElementById('letterGuess').value;
+        const host = window.location.host;
 
-        fetch('http://localhost:3000/guess-letter', {
+        fetch(`http://${host}/guess-letter`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -60,8 +62,9 @@
         event.preventDefault();
 
         const message = document.getElementById('wordGuess').value;
+        const host = window.location.host;
 
-        fetch('http://localhost:3000/guess-word', {
+        fetch(`http://${host}/guess-word`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'

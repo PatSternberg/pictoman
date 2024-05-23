@@ -17,7 +17,8 @@ const words = readWordsFromFile(wordsFilePath);
 // Get a random word from the file and make it all lower case
 let randomNum = Math.floor(Math.random() * words.length);
 let randomWord: string = words[randomNum].toLowerCase();
-console.log(randomWord, typeof randomWord);
+console.log(`Word to guess is`);
+console.log(randomWord);
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
@@ -63,23 +64,25 @@ app.post('/guess-word', (req, res) => {
     // Check if the user's guessed letter is in the word
     if (randomWord === userGuess) {
       result = `Well done! That's the correct word. A new word has been chosen.`;
+      correctLetters = [];
 
       // Get a random word from the file and make it all lower case
       randomNum = Math.floor(Math.random() * words.length);
       let newRandomWord: string = words[randomNum].toLowerCase();
       // Check that the new word is different and reroll if not
       while (newRandomWord === randomWord) {
-        console.log(`"New word is the same"`);
+        console.log(`"New word is the same:"`);
         console.log(newRandomWord, randomWord);
         randomNum = Math.floor(Math.random() * words.length);
         newRandomWord = words[randomNum].toLowerCase();
       }
       // Set the new word to the newly generated word
       randomWord = newRandomWord;
-      console.log(randomWord, typeof randomWord);
+      console.log(`Word to guess is`);
+      console.log(randomWord);
     }
   }
-  res.send({ response: result, correctLetters: [] });
+  res.send({ response: result, correctLetters: correctLetters });
 });
 
 app.listen(port, () => {

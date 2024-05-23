@@ -17,7 +17,7 @@ h2 {
 .display {
     margin: 20px;
     padding: 30px;
-    background-color: floralwhite;
+    background-color: rgb(255, 227, 171);
 }
 
 .title {
@@ -34,12 +34,28 @@ h2 {
 
 .input-box {
     display: flex;
+    align-items: center;
     margin-top: 20px;
     margin-bottom: 20px;
 }
 
 .input-box label {
     margin-right: 10px;
+}
+
+.input-box input {
+    border: 0px;
+    padding: 10px;
+    min-height: 10px;
+}
+
+.input-box button {
+    font-weight: 500;
+    padding: 5px;
+    margin-left: 5px;
+    background-color: sandybrown;
+    border-color: sandybrown;
+    border-radius: 5px;
 }
 
 .correct-letters-box {
