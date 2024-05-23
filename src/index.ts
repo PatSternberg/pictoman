@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 // Store correct user guesses in array
-const correctLetters: string[] = [];
+let correctLetters: string[] = [];
 
 // Get a random word for the user to guess
 // Read words from the file
@@ -15,8 +15,8 @@ const wordsFilePath = path.join(__dirname, '../public/words.txt');
 const words = readWordsFromFile(wordsFilePath);
 
 // Get a random word from the file and make it all lower case
-const randomNum = Math.floor(Math.random() * words.length);
-const randomWord: string = words[randomNum].toLowerCase();
+let randomNum = Math.floor(Math.random() * words.length);
+let randomWord: string = words[randomNum].toLowerCase();
 console.log(randomWord, typeof randomWord);
 
 // Middleware to parse JSON bodies
@@ -36,8 +36,8 @@ function readWordsFromFile(filePath: string): string[] {
   }
 }
 
-// Endpoint to handle user input
-app.post('/guess', (req, res) => {
+// Endpoint to handle user letter guess
+app.post('/guess-letter', (req, res) => {
   const userGuess: string = req.body.message.toLowerCase();
   let result = `No, that's not right`;
   if (!userGuess || userGuess.length !== 1) {
@@ -52,6 +52,38 @@ app.post('/guess', (req, res) => {
   res.send({ response: result, correctLetters: correctLetters });
 });
 
+// Endpoint to handle user letter guess
+app.post('/guess-word', (req, res) => {
+  const userGuess: string = req.body.message.toLowerCase();
+  console.log(userGuess);
+  let result = `No, that's not the right word`;
+  if (!userGuess) {
+    result = `Guess a word`;
+  } else {
+    // Check if the user's guessed letter is in the word
+    if (randomWord === userGuess) {
+      result = `Well done! That's the correct word. A new word has been chosen.`;
+      // Reset correct letters
+      correctLetters = [];
+
+      // Get a random word from the file and make it all lower case
+      randomNum = Math.floor(Math.random() * words.length);
+      let newRandomWord: string = words[randomNum].toLowerCase();
+      // Check that the new word is different and reroll if not
+      while (newRandomWord === randomWord) {
+        console.log(`"New word is the same"`);
+        console.log(newRandomWord, randomWord);
+        randomNum = Math.floor(Math.random() * words.length);
+        newRandomWord = words[randomNum].toLowerCase();
+      }
+      // Set the new word to the newly generated word
+      randomWord = newRandomWord;
+      console.log(randomWord, typeof randomWord);
+    }
+  }
+  res.send({ response: result, correctLetters: correctLetters });
+});
+
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Pictoman server is running at http://localhost:${port}`);
 });
