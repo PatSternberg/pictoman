@@ -7,7 +7,7 @@ const app = express();
 const port = 3000;
 
 // Store correct user guesses in array
-const correctLetters: string[] = [];
+let correctLetters: string[] = [];
 
 // Get a random word for the user to guess
 // Read words from the file
@@ -15,8 +15,8 @@ const wordsFilePath = path.join(__dirname, '../public/words.txt');
 const words = readWordsFromFile(wordsFilePath);
 
 // Get a random word from the file and make it all lower case
-const randomNum = Math.floor(Math.random() * words.length);
-const randomWord: string = words[randomNum].toLowerCase();
+let randomNum = Math.floor(Math.random() * words.length);
+let randomWord: string = words[randomNum].toLowerCase();
 console.log(randomWord, typeof randomWord);
 
 // Middleware to parse JSON bodies
@@ -62,12 +62,28 @@ app.post('/guess-word', (req, res) => {
   } else {
     // Check if the user's guessed letter is in the word
     if (randomWord === userGuess) {
-      result = `Well done! That's the correct word.`;
+      result = `Well done! That's the correct word. A new word has been chosen.`;
+      // Reset correct letters
+      correctLetters = [];
+
+      // Get a random word from the file and make it all lower case
+      randomNum = Math.floor(Math.random() * words.length);
+      let newRandomWord: string = words[randomNum].toLowerCase();
+      // Check that the new word is different and reroll if not
+      while (newRandomWord === randomWord) {
+        console.log(`"New word is the same"`);
+        console.log(newRandomWord, randomWord);
+        randomNum = Math.floor(Math.random() * words.length);
+        newRandomWord = words[randomNum].toLowerCase();
+      }
+      // Set the new word to the newly generated word
+      randomWord = newRandomWord;
+      console.log(randomWord, typeof randomWord);
     }
   }
-  res.send({ response: result });
+  res.send({ response: result, correctLetters: correctLetters });
 });
 
 app.listen(port, () => {
-  console.log(`Server is running at http://localhost:${port}`);
+  console.log(`Pictoman server is running at http://localhost:${port}`);
 });
