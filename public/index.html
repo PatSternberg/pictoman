@@ -4,71 +4,80 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pictoman</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <h1>Pictoman</h1>
-  <form id="letterGuessForm">
-    <label for="letterGuess">Enter your guess:</label>
-    <input type="text" id="letterGuess" name="letterGuess" required>
-    <button type="submit">Send</button>
-  </form>
-  <div id="letterGuessResponse"></div>
-  <div id="correctLetters"></div>
+  <div class="display">
+    <div class="title">
+      <img src="logo.png" alt="Logo">
+      <h1>ictoman</h1>
+    </div>
+    <form class="input-box" id="letterGuessForm">
+      <label for="letterGuess">Enter your guess:</label>
+      <input type="text" id="letterGuess" name="letterGuess" required>
+      <button type="submit">Send</button>
+    </form>
+    <div class="response" id="letterGuessResponse"></div>
+    <div class=correct-letters-box>
+      <h2>Correct letters</h2>
+      <br>
+      <div id="correctLetters"></div>
+    </div>
 
-  <form id="wordGuessForm">
-    <label for="wordGuess">Guess the word:</label>
-    <input type="text" id="wordGuess" name="wordGuess" required>
-    <button type="submit">Send</button>
-  </form>
-  <div id="wordGuessResponse"></div>
+    <form class="input-box" id="wordGuessForm">
+      <label for="wordGuess">Guess the word:</label>
+      <input type="text" id="wordGuess" name="wordGuess" required>
+      <button type="submit">Send</button>
+    </form>
+    <div class="response" id="wordGuessResponse"></div>
 
-  <script>
-    document.getElementById('letterGuessForm').addEventListener('submit', function(event) {
-      event.preventDefault();
+    <script>
+      document.getElementById('letterGuessForm').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-      const message = document.getElementById('letterGuess').value;
+        const message = document.getElementById('letterGuess').value;
 
-      fetch('http://localhost:3000/guess-letter', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: message })
-      })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('letterGuessResponse').innerText = data.response;
-        document.getElementById('correctLetters').innerText = `Correct letters: ${data.correctLetters.join(', ')}`;
-      })
-      .catch(error => {
-        console.error('Error:', error);
+        fetch('http://localhost:3000/guess-letter', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('letterGuessResponse').innerText = data.response;
+          document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
       });
-    });
-  </script>
+    </script>
 
-  <script>
-    document.getElementById('wordGuessForm').addEventListener('submit', function(event) {
-      event.preventDefault();
+    <script>
+      document.getElementById('wordGuessForm').addEventListener('submit', function(event) {
+        event.preventDefault();
 
-      const message = document.getElementById('wordGuess').value;
+        const message = document.getElementById('wordGuess').value;
 
-      fetch('http://localhost:3000/guess-word', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ message: message })
-      })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('wordGuessResponse').innerText = data.response;
-        document.getElementById('correctLetters').innerText = `Correct letters: ${data.correctLetters.join(', ')}`;
-      })
-      .catch(error => {
-        console.error('Error:', error);
+        fetch('http://localhost:3000/guess-word', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('wordGuessResponse').innerText = data.response;
+          document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
       });
-    });
-  </script>
-
+    </script>
+  </div>
 </body>
 </html>

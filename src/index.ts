@@ -63,8 +63,6 @@ app.post('/guess-word', (req, res) => {
     // Check if the user's guessed letter is in the word
     if (randomWord === userGuess) {
       result = `Well done! That's the correct word. A new word has been chosen.`;
-      // Reset correct letters
-      correctLetters = [];
 
       // Get a random word from the file and make it all lower case
       randomNum = Math.floor(Math.random() * words.length);
@@ -81,7 +79,7 @@ app.post('/guess-word', (req, res) => {
       console.log(randomWord, typeof randomWord);
     }
   }
-  res.send({ response: result, correctLetters: correctLetters });
+  res.send({ response: result, correctLetters: [] });
 });
 
 app.listen(port, () => {
