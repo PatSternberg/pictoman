@@ -1,100 +1,51 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
-import { getRandomIntInclusive } from './controllers/randomInclusiveNum';
-import { searchImages } from './controllers/searchImages';
-import { newRandomWord } from './controllers/randomWord';
+import os from 'os';
+import { handleStartGame } from './controllers/startGame';
 import { handleGuessLetter } from './controllers/guessLetter';
+import { handleGuessWord } from './controllers/guessWord';
 
 const app = express();
 const port = 3000;
 
-// Create a var to store the randomly chosen word
-let randomWord: string = '';
+// OS FUNCTIONS
+// Function to get the local external IP address
+function getLocalExternalIP() {
+  const interfaces = os.networkInterfaces();
+  for (const name of Object.keys(interfaces)) {
+    const ifaceArray = interfaces[name];
+    if (ifaceArray) {
+      for (const iface of ifaceArray) {
+        if (iface.family === 'IPv4' && !iface.internal) {
+          return iface.address;
+        }
+      }
+    }
+  }
+  return 'localhost';
+}
 
-// Store correct user guesses in array
-let correctLetters: string[] = [];
-
-// Store number of remaining user guess as a number
-let guessNumber: number = 10;
-
-// Store values relating to the clue image
-let clipRadius: number = 0;
-
-// Store the image URL
-let imageURL: string = '';
-
-let result: string = 'Time to get guessing!';
-
+// APP CONFIG
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
 
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, '../public')));
 
+// APP ENDPOINTS
 // Endpoint to handle user letter guesses
 app.post('/guess-letter', handleGuessLetter);
 
-// Endpoint for getting the landing page
-app.post('/start', async (req, res) => {
-  // Generate a new word to guess to the newly generated word
-  const currentWord = '';
-  randomWord = newRandomWord(currentWord);
-  console.log(`Word to guess is`);
-  console.log(randomWord);
-
-  // Search for images for the new word
-  imageURL = await searchImages(randomWord);
-
-  res.send({
-    response: result,
-    correctLetters: correctLetters,
-    guessNumber: guessNumber,
-    clipRadius: clipRadius,
-    clipX: getRandomIntInclusive(10, 90),
-    clipY: getRandomIntInclusive(10, 90),
-    imageURL: imageURL, // Include the image URL in the response
-  });
-});
+// Endpoint for (re)starting the game
+app.post('/start', handleStartGame);
 
 // Endpoint to handle user word guesses
-app.post('/guess-word', async (req, res) => {
-  const userGuess: string = req.body.message.toLowerCase();
-  console.log(userGuess);
-  let result = `No, that's not the right word`;
-  if (!userGuess) {
-    result = `Guess a word`;
-  } else {
-    // Check if the user's guessed letter is in the word
-    if (randomWord === userGuess) {
-      result = `Well done! That's the correct word. A new word has been chosen.`;
-      correctLetters = [];
+app.post('/guess-word', handleGuessWord);
 
-      // Generate a new word to guess to the newly generated word
-      const currentWord = '';
-      randomWord = newRandomWord(currentWord);
-      console.log(`Word to guess is`);
-      console.log(randomWord);
-
-      // Search for images for the new word
-      imageURL = await searchImages(randomWord);
-
-      // Reset the radius of the revealed clue area
-      clipRadius = 0;
-    }
-  }
-
-  res.send({
-    response: result,
-    correctLetters: correctLetters,
-    guessNumber: guessNumber,
-    clipRadius: clipRadius,
-    clipX: getRandomIntInclusive(10, 90),
-    clipY: getRandomIntInclusive(10, 90),
-    imageURL: imageURL, // Include the image URL in the response
-  });
-});
-
+// APP SERVER FUNCTIONS
+// Start the server and log the actual hostname
 app.listen(port, () => {
-  console.log(`Pictoman server is running at http://localhost:${port}`);
+  const host = getLocalExternalIP();
+  console.log(`Pictoman server is running at http://${host}:${port}`);
 });
