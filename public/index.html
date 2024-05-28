@@ -42,7 +42,7 @@
     <div class="response" id="wordGuessResponse"></div>
 
     <h2>Here's a clue</h2>
-    <img src="images/castle.jpg" style="clip-path: circle(10% at 20% 20%)">
+    <img id="clueImage" src="images/castle.jpg" style="clip-path: circle(0% at 0% 0%)">
 
     <!-- Guess letter script -->
     <script>
@@ -64,6 +64,10 @@
           document.getElementById('letterGuessResponse').innerText = data.response;
           document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
           document.getElementById('guessNumber').innerText = data.guessNumber;
+
+          // Update the clip-path style based on the response data
+          const clipPathValue = `circle(${data.clipRadius}% at ${data.clipX}% ${data.clipY}%)`;
+          document.getElementById('clueImage').style.clipPath = clipPathValue;
         })
         .catch(error => {
           console.error('Error:', error);

@@ -12,6 +12,11 @@ let correctLetters: string[] = [];
 // Store number of remaining user guess as a number
 let guessNumber: number = 10;
 
+// Store values relating to the clue image
+let clipRadius: number = 0;
+let clipX: number = 0;
+let clipY: number = 5;
+
 // Get a random word for the user to guess
 // Read words from the file
 const wordsFilePath = path.join(__dirname, '../public/words.txt');
@@ -38,6 +43,13 @@ function readWordsFromFile(filePath: string): string[] {
     console.error('Error reading the file:', error);
     return [];
   }
+}
+
+// Function to get a random integer between two values (inclusive)
+function getRandomIntInclusive(min: number, max: number): number {
+  const minCeiled = Math.ceil(min);
+  const maxFloored = Math.floor(max);
+  return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
 }
 
 // Endpoint to handle user letter guesses
@@ -69,6 +81,9 @@ app.post('/guess-letter', (req, res) => {
     randomWord = newRandomWord;
     console.log(`Word to guess is`);
     console.log(randomWord);
+
+    // Reset the radius of the revealed clue area
+    clipRadius = -2.5;
     
   } else {
     // Check if the user's guessed letter is in the word
@@ -79,7 +94,21 @@ app.post('/guess-letter', (req, res) => {
   }
   // Reduce number of remaining user guesses
   guessNumber--;
-  res.send({ response: result, correctLetters: correctLetters, guessNumber: guessNumber });
+
+  // Increase the radius of the revealed clue area
+  clipRadius += 2.5;
+  console.log(clipRadius);
+  console.log(clipX);
+  console.log(clipY);
+
+  res.send({
+    response: result,
+    correctLetters: correctLetters,
+    guessNumber: guessNumber,
+    clipRadius: clipRadius,
+    clipX: getRandomIntInclusive(10, 90),
+    clipY: getRandomIntInclusive(10, 90),
+  });
 });
 
 // Endpoint to handle user word guesses
@@ -111,7 +140,18 @@ app.post('/guess-word', (req, res) => {
       console.log(randomWord);
     }
   }
-  res.send({ response: result, correctLetters: correctLetters, guessNumber: guessNumber });
+
+  // Reset the radius of the revealed clue area
+  clipRadius = 0;
+
+  res.send({
+    response: result,
+    correctLetters: correctLetters,
+    guessNumber: guessNumber,
+    clipRadius: clipRadius,
+    clipX: getRandomIntInclusive(10, 90),
+    clipY: getRandomIntInclusive(10, 90),
+  });
 });
 
 app.listen(port, () => {
