@@ -41,6 +41,9 @@
     </form>
     <div class="response" id="wordGuessResponse"></div>
 
+    <h2>Here's a clue</h2>
+    <img id="clueImage" src="images/castle.jpg" style="clip-path: circle(0% at 0% 0%); width: 500px; height: 500px;">
+
     <!-- Guess letter script -->
     <script>
       document.getElementById('letterGuessForm').addEventListener('submit', function(event) {
@@ -61,6 +64,13 @@
           document.getElementById('letterGuessResponse').innerText = data.response;
           document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
           document.getElementById('guessNumber').innerText = data.guessNumber;
+
+          // Update the clip-path style based on the response data
+          const clipPathValue = `circle(${data.clipRadius}% at ${data.clipX}% ${data.clipY}%)`;
+          document.getElementById('clueImage').style.clipPath = clipPathValue;
+
+          // Update the src attribute of clueImage with the returned imageUrl
+          document.getElementById('clueImage').src = data.imageURL;
         })
         .catch(error => {
           console.error('Error:', error);
@@ -88,6 +98,13 @@
           document.getElementById('wordGuessResponse').innerText = data.response;
           document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
           document.getElementById('guessNumber').innerText = data.guessNumber;
+
+          // Update the clip-path style based on the response data
+          const clipPathValue = `circle(${data.clipRadius}% at ${data.clipX}% ${data.clipY}%)`;
+          document.getElementById('clueImage').style.clipPath = clipPathValue;
+
+          // Update the src attribute of clueImage with the returned imageUrl
+          document.getElementById('clueImage').src = data.imageURL;
         })
         .catch(error => {
           console.error('Error:', error);
