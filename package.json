@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "dotenv": "^16.4.5",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "google-image-sr": "^1.0.0"
   },
   "scripts": {
     "build": "tsc",
