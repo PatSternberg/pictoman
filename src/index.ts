@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
 import fs from 'fs';
+import search from 'google-image-sr';
 
 const app = express();
 const port = 3000;
@@ -27,6 +28,7 @@ let randomNum = Math.floor(Math.random() * words.length);
 let randomWord: string = words[randomNum].toLowerCase();
 console.log(`Word to guess is`);
 console.log(randomWord);
+searchImages(randomWord);
 
 // Middleware to parse JSON bodies
 app.use(bodyParser.json());
@@ -50,6 +52,16 @@ function getRandomIntInclusive(min: number, max: number): number {
   const minCeiled = Math.ceil(min);
   const maxFloored = Math.floor(max);
   return Math.floor(Math.random() * (maxFloored - minCeiled + 1) + minCeiled);
+}
+
+// Function to get the first image url from a Google Images search
+async function searchImages(query: string) {
+  try {
+    const response = await search(query);
+    console.log(response);
+  } catch (error) {
+    console.log('Error occured during image search:', error);
+  }
 }
 
 // Endpoint to handle user letter guesses
