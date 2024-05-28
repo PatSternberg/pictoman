@@ -13,16 +13,25 @@
       <img src="logo.png" alt="Logo">
       <h1>ictoman</h1>
     </div>
+
     <form class="input-box" id="letterGuessForm">
       <label for="letterGuess">Enter your guess:</label>
       <input type="text" id="letterGuess" name="letterGuess" required>
       <button type="submit">Submit</button>
     </form>
+
     <div class="response" id="letterGuessResponse"></div>
+
     <div class=correct-letters-box>
       <h2>Correct letters</h2>
       <br>
       <div id="correctLetters"></div>
+    </div>
+
+    <div class=correct-letters-box>
+      <h2>Remaining guesses</h2>
+      <br>
+      <div id="guessNumber"></div>
     </div>
 
     <form class="input-box" id="wordGuessForm">
@@ -32,6 +41,7 @@
     </form>
     <div class="response" id="wordGuessResponse"></div>
 
+    <!-- Guess letter script -->
     <script>
       document.getElementById('letterGuessForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -50,6 +60,7 @@
         .then(data => {
           document.getElementById('letterGuessResponse').innerText = data.response;
           document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
+          document.getElementById('guessNumber').innerText = data.guessNumber;
         })
         .catch(error => {
           console.error('Error:', error);
@@ -57,6 +68,7 @@
       });
     </script>
 
+    <!-- Guess word script -->
     <script>
       document.getElementById('wordGuessForm').addEventListener('submit', function(event) {
         event.preventDefault();
@@ -75,6 +87,7 @@
         .then(data => {
           document.getElementById('wordGuessResponse').innerText = data.response;
           document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
+          document.getElementById('guessNumber').innerText = data.guessNumber;
         })
         .catch(error => {
           console.error('Error:', error);
