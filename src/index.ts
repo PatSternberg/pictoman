@@ -2,7 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import path from 'path';
 import fs from 'fs';
-import search from 'google-image-sr';
+import axios from 'axios';
 
 const app = express();
 const port = 3000;
@@ -57,10 +57,24 @@ function getRandomIntInclusive(min: number, max: number): number {
 // Function to get the first image url from a Google Images search
 async function searchImages(query: string) {
   try {
-    const response = await search(query);
-    console.log(response);
+    // Make a request to the Google Images API
+    const apiKey = 'AIzaSyCthbs1l2gtMuUSc1v5xKMekjuMTjwotLk'; // Replace 'YOUR_API_KEY' with your actual API key
+    const cx = 'f3749c6cc599040b4'; // Replace 'YOUR_CUSTOM_SEARCH_ENGINE_ID' with your actual custom search engine ID
+    const response = await axios.get('https://www.googleapis.com/customsearch/v1', {
+      params: {
+        key: apiKey,
+        cx: cx,
+        q: query,
+        searchType: 'image',
+        num: 1 // Limit the number of results to 1
+      }
+    });
+
+    // Extract the first image URL from the response
+    const imageUrl = response.data.items[0].link;
+    console.log('First image URL:', imageUrl);
   } catch (error) {
-    console.log('Error occured during image search:', error);
+    console.log('Error occurred during image search:', error);
   }
 }
 
