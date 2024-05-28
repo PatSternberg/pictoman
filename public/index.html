@@ -14,6 +14,10 @@
       <h1>ictoman</h1>
     </div>
 
+    <form class="input-box" id="startForm">
+      <button type="submit">START</button>
+    </form>
+
     <form class="input-box" id="letterGuessForm">
       <label for="letterGuess">Enter your guess:</label>
       <input type="text" id="letterGuess" name="letterGuess" required>
@@ -43,6 +47,39 @@
 
     <h2>Here's a clue</h2>
     <img id="clueImage" src="images/castle.jpg" style="clip-path: circle(0% at 0% 0%); width: 500px; height: 500px;">
+
+    <!-- (Re)start script -->
+    <script>
+      document.getElementById('startForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const host = window.location.host;
+
+        fetch(`http://${host}/start`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({})
+        })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('letterGuessResponse').innerText = data.response;
+          document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
+          document.getElementById('guessNumber').innerText = data.guessNumber;
+
+          // Update the clip-path style based on the response data
+          const clipPathValue = `circle(${data.clipRadius}% at ${data.clipX}% ${data.clipY}%)`;
+          document.getElementById('clueImage').style.clipPath = clipPathValue;
+
+          // Update the src attribute of clueImage with the returned imageUrl
+          document.getElementById('clueImage').src = data.imageURL;
+        })
+        .catch(error => {
+          console.error('Error:', error);
+        });
+      });
+    </script>
 
     <!-- Guess letter script -->
     <script>
