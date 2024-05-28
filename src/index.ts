@@ -18,6 +18,9 @@ let clipRadius: number = 0;
 let clipX: number = 0;
 let clipY: number = 5;
 
+// Store the image URL
+let imageURL: string = '';
+
 // Get a random word for the user to guess
 // Read words from the file
 const wordsFilePath = path.join(__dirname, '../public/words.txt');
@@ -71,15 +74,16 @@ async function searchImages(query: string) {
     });
 
     // Extract the first image URL from the response
-    const imageUrl = response.data.items[0].link;
-    console.log('First image URL:', imageUrl);
+    console.log('First image URL:', response.data.items[0].link);
+    return response.data.items[0].link;
   } catch (error) {
     console.log('Error occurred during image search:', error);
+    return ''; // Return an empty string if there's an error
   }
 }
 
 // Endpoint to handle user letter guesses
-app.post('/guess-letter', (req, res) => {
+app.post('/guess-letter', async (req, res) => {
   const userGuess: string = req.body.message.toLowerCase();
   let result = `No, that's not right`;
   if (!userGuess || userGuess.length !== 1) {
@@ -110,6 +114,9 @@ app.post('/guess-letter', (req, res) => {
 
     // Reset the radius of the revealed clue area
     clipRadius = -2.5;
+
+    // Search for images for the new word
+    imageURL = await searchImages(randomWord);
     
   } else {
     // Check if the user's guessed letter is in the word
@@ -123,9 +130,6 @@ app.post('/guess-letter', (req, res) => {
 
   // Increase the radius of the revealed clue area
   clipRadius += 2.5;
-  console.log(clipRadius);
-  console.log(clipX);
-  console.log(clipY);
 
   res.send({
     response: result,
@@ -134,11 +138,12 @@ app.post('/guess-letter', (req, res) => {
     clipRadius: clipRadius,
     clipX: getRandomIntInclusive(10, 90),
     clipY: getRandomIntInclusive(10, 90),
+    imageURL: imageURL, // Include the image URL in the response
   });
 });
 
 // Endpoint to handle user word guesses
-app.post('/guess-word', (req, res) => {
+app.post('/guess-word', async (req, res) => {
   const userGuess: string = req.body.message.toLowerCase();
   console.log(userGuess);
   let result = `No, that's not the right word`;
@@ -164,6 +169,9 @@ app.post('/guess-word', (req, res) => {
       randomWord = newRandomWord;
       console.log(`Word to guess is`);
       console.log(randomWord);
+
+      // Search for images for the new word
+      imageURL = await searchImages(randomWord);
     }
   }
 
@@ -177,6 +185,7 @@ app.post('/guess-word', (req, res) => {
     clipRadius: clipRadius,
     clipX: getRandomIntInclusive(10, 90),
     clipY: getRandomIntInclusive(10, 90),
+    imageURL: imageURL, // Include the image URL in the response
   });
 });
 
