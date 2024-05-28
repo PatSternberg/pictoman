@@ -4,6 +4,7 @@ import path from 'path';
 import { getRandomIntInclusive } from './controllers/randomInclusiveNum';
 import { searchImages } from './controllers/searchImages';
 import { newRandomWord } from './controllers/randomWord';
+import { handleGuessLetter } from './controllers/guessLetter';
 
 const app = express();
 const port = 3000;
@@ -31,6 +32,9 @@ app.use(bodyParser.json());
 // Serve static files from the "public" directory
 app.use(express.static(path.join(__dirname, '../public')));
 
+// Endpoint to handle user letter guesses
+app.post('/guess-letter', handleGuessLetter);
+
 // Endpoint for getting the landing page
 app.post('/start', async (req, res) => {
   // Generate a new word to guess to the newly generated word
@@ -41,54 +45,6 @@ app.post('/start', async (req, res) => {
 
   // Search for images for the new word
   imageURL = await searchImages(randomWord);
-
-  res.send({
-    response: result,
-    correctLetters: correctLetters,
-    guessNumber: guessNumber,
-    clipRadius: clipRadius,
-    clipX: getRandomIntInclusive(10, 90),
-    clipY: getRandomIntInclusive(10, 90),
-    imageURL: imageURL, // Include the image URL in the response
-  });
-});
-
-// Endpoint to handle user letter guesses
-app.post('/guess-letter', async (req, res) => {
-  const userGuess: string = req.body.message.toLowerCase();
-  let result = `No, that's not right`;
-  if (!userGuess || userGuess.length !== 1) {
-    result = `Guess a single letter`;
-    // Check if user has any guesses left
-  } else if (guessNumber < 1) {
-    // Reset everything if not
-    result = `You're out of guesses - resetting with a new word`
-    correctLetters = [];
-    guessNumber = 10;
-
-    // Generate a new word to guess to the newly generated word
-    const currentWord = '';
-    randomWord = newRandomWord(currentWord);
-    console.log(`Word to guess is`);
-    console.log(randomWord);
-
-    // Search for images for the new word
-    imageURL = await searchImages(randomWord);
-
-    // Reset the radius of the revealed clue area
-    clipRadius = -2.5;
-  } else {
-    // Check if the user's guessed letter is in the word
-    if (randomWord.includes(userGuess)) {
-      correctLetters.push(userGuess.toUpperCase());
-      result = `Well done! That's correct.`;
-    }
-  }
-  // Reduce number of remaining user guesses
-  guessNumber--;
-
-  // Increase the radius of the revealed clue area
-  clipRadius += 2.5;
 
   res.send({
     response: result,

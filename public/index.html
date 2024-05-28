@@ -33,6 +33,12 @@
     </div>
 
     <div class=correct-letters-box>
+      <h2>Incorrect letters</h2>
+      <br>
+      <div id="incorrectLetters"></div>
+    </div>
+
+    <div class=correct-letters-box>
       <h2>Remaining guesses</h2>
       <br>
       <div id="guessNumber"></div>
@@ -66,6 +72,7 @@
         .then(data => {
           document.getElementById('letterGuessResponse').innerText = data.response;
           document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
+          document.getElementById('incorrectLetters').innerText = `${data.incorrectLetters.join(', ')}`;
           document.getElementById('guessNumber').innerText = data.guessNumber;
 
           // Update the clip-path style based on the response data
@@ -100,6 +107,7 @@
         .then(data => {
           document.getElementById('letterGuessResponse').innerText = data.response;
           document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
+          document.getElementById('incorrectLetters').innerText = `${data.incorrectLetters.join(', ')}`;
           document.getElementById('guessNumber').innerText = data.guessNumber;
 
           // Update the clip-path style based on the response data
@@ -134,6 +142,7 @@
         .then(data => {
           document.getElementById('wordGuessResponse').innerText = data.response;
           document.getElementById('correctLetters').innerText = `${data.correctLetters.join(', ')}`;
+          document.getElementById('incorrectLetters').innerText = `${data.incorrectLetters.join(', ')}`;
           document.getElementById('guessNumber').innerText = data.guessNumber;
 
           // Update the clip-path style based on the response data

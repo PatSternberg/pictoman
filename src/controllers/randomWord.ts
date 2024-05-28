@@ -9,15 +9,14 @@ export function newRandomWord(currentWord: string): string {
 
   // Get a random number to choose a word from the file
   let randomNum = Math.floor(Math.random() * words.length);
-  let newRandomWord: string = words[randomNum].toLowerCase();
+  let newRandomWord: string = words[randomNum].toUpperCase();
 
   // Check that the new word is different and reroll if not
   while (newRandomWord === currentWord) {
+    randomNum = Math.floor(Math.random() * words.length);
+    newRandomWord = words[randomNum].toUpperCase();
     console.log(`"New word is the same:"`);
     console.log(newRandomWord, currentWord);
-
-    randomNum = Math.floor(Math.random() * words.length);
-    newRandomWord = words[randomNum].toLowerCase();
   }
 
   return newRandomWord;
