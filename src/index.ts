@@ -9,6 +9,9 @@ const port = 3000;
 // Store correct user guesses in array
 let correctLetters: string[] = [];
 
+// Store number of remaining user guess as a number
+let guessNumber: number = 10;
+
 // Get a random word for the user to guess
 // Read words from the file
 const wordsFilePath = path.join(__dirname, '../public/words.txt');
@@ -37,12 +40,36 @@ function readWordsFromFile(filePath: string): string[] {
   }
 }
 
-// Endpoint to handle user letter guess
+// Endpoint to handle user letter guesses
 app.post('/guess-letter', (req, res) => {
   const userGuess: string = req.body.message.toLowerCase();
   let result = `No, that's not right`;
   if (!userGuess || userGuess.length !== 1) {
     result = `Guess a single letter`;
+  // Check if user has any guesses left
+  } else if (guessNumber < 1) {
+    // Reset everything if not
+    result = `You're out of guesses - resetting with a new word`
+    correctLetters = [];
+    guessNumber = 10;
+
+    // Get a random word from the file and make it all lower case
+    randomNum = Math.floor(Math.random() * words.length);
+    let newRandomWord: string = words[randomNum].toLowerCase();
+
+    // Check that the new word is different and reroll if not
+    while (newRandomWord === randomWord) {
+      console.log(`"New word is the same:"`);
+      console.log(newRandomWord, randomWord);
+      randomNum = Math.floor(Math.random() * words.length);
+      newRandomWord = words[randomNum].toLowerCase();
+    }
+
+    // Set the new word to the newly generated word
+    randomWord = newRandomWord;
+    console.log(`Word to guess is`);
+    console.log(randomWord);
+    
   } else {
     // Check if the user's guessed letter is in the word
     if (randomWord.includes(userGuess)) {
@@ -50,10 +77,12 @@ app.post('/guess-letter', (req, res) => {
       result = `Well done! That's correct.`;
     }
   }
-  res.send({ response: result, correctLetters: correctLetters });
+  // Reduce number of remaining user guesses
+  guessNumber--;
+  res.send({ response: result, correctLetters: correctLetters, guessNumber: guessNumber });
 });
 
-// Endpoint to handle user letter guess
+// Endpoint to handle user word guesses
 app.post('/guess-word', (req, res) => {
   const userGuess: string = req.body.message.toLowerCase();
   console.log(userGuess);
@@ -82,7 +111,7 @@ app.post('/guess-word', (req, res) => {
       console.log(randomWord);
     }
   }
-  res.send({ response: result, correctLetters: correctLetters });
+  res.send({ response: result, correctLetters: correctLetters, guessNumber: guessNumber });
 });
 
 app.listen(port, () => {
