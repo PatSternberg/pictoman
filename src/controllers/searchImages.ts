@@ -1,11 +1,16 @@
 import axios from 'axios';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 // Function to get the first image url from a Google Images search
 export async function searchImages(query: string) {
   try {
     // Make a request to the Google Images API
-    const apiKey = 'AIzaSyCthbs1l2gtMuUSc1v5xKMekjuMTjwotLk'; // Replace 'YOUR_API_KEY' with your actual API key
-    const cx = 'f3749c6cc599040b4'; // Replace 'YOUR_CUSTOM_SEARCH_ENGINE_ID' with your actual custom search engine ID
+    // Get API key and custom search engine from environment variables
+    const apiKey = process.env.GOOGLE_API_KEY;
+    const cx = process.env.GOOGLE_CUSTOM_SEARCH_ENGINE_ID;
+
     const response = await axios.get('https://www.googleapis.com/customsearch/v1', 
       {
         params: {
