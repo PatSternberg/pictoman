@@ -1,32 +1,31 @@
+// file: pictoman/src/controllers/gameState.ts
 import { getRandomIntInclusive } from './randomInclusiveNum';
 import { searchImages } from './searchImages';
 import { newRandomWord } from './randomWord';
 
 export class GameState {
-  private randomWord: string;
-  private guessNumber: number;
-  private correctLetters: string[];
-  private incorrectLetters: string[];
-  private clipRadius: number;
-  private imageURL: string;
+  private randomWord: string = '';
+  private guessNumber: number = 10;
+  private correctLetters: string[] = [];
+  private incorrectLetters: string[] = [];
+  private clipRadius: number = 0;
+  private clipX: number = 50;
+  private clipY: number = 50;
+  private imageURL: string = '';
 
   constructor() {
-    this.randomWord = '';
-    this.guessNumber = 10;
-    this.correctLetters = [];
-    this.incorrectLetters = [];
-    this.clipRadius = 0;
-    this.imageURL = '';
     this.startNewGame();
   }
 
   private async startNewGame() {
-    this.correctLetters = [];
-    this.incorrectLetters = [];
-    this.guessNumber = 10;
-    this.clipRadius = 0;
     this.randomWord = newRandomWord('');
     console.log(`Word to guess is: ${this.randomWord}`);
+    this.guessNumber = 10;
+    this.correctLetters = [];
+    this.incorrectLetters = [];
+    this.clipRadius = 0;
+    this.clipX = getRandomIntInclusive(10, 90);
+    this.clipY = getRandomIntInclusive(10, 90);
     this.imageURL = await searchImages(this.randomWord);
   }
 
