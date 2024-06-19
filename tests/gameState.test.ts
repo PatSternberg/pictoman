@@ -9,21 +9,23 @@ jest.mock('../src/controllers/randomInclusiveNum');
 jest.mock('../src/controllers/searchImages');
 jest.mock('../src/controllers/randomWord');
 
+// Silence console.log to reduce unwanted logs during tests
+jest.spyOn(console, 'log').mockImplementation(() => {});
+
 describe('Test gameState initialises and functions as expected', () => {
   let gameState: GameState;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     gameState = new GameState();
+    (newRandomWord as jest.Mock).mockReturnValue('test');
+    (searchImages as jest.Mock).mockResolvedValue('https://example.com/test_image.jpg');
+    (getRandomIntInclusive as jest.Mock).mockReturnValue(50);
+    
+    await gameState['startNewGame']();  // Ensure startNewGame runs before each test
   });
 
-  // Use 'it' instead of 'test' as BDD prefered
-  it('initialises with correct default values', () => {
-    (newRandomWord as jest.Mock).mockReturnValue('test');
-    (searchImages as jest.Mock).mockResolvedValue('test_url');
-    (getRandomIntInclusive as jest.Mock).mockReturnValue(50);
-
-    // Await getState() to ensure all asynchronous operations inside it are completed
-    const state = gameState.getState();
+  it('initialises with correct default values', async () => {
+    const state = await gameState.getState();
 
     expect(state).toHaveProperty('correctLetters');
     expect(state).toHaveProperty('incorrectLetters');
@@ -35,17 +37,8 @@ describe('Test gameState initialises and functions as expected', () => {
   });
 
   it('startNewGame initialises the state correctly', async () => {
-    (newRandomWord as jest.Mock).mockReturnValue('test');
-    (getRandomIntInclusive as jest.Mock).mockReturnValue(50);
-    // Mock searchImages to return a predefined URL
-    (searchImages as jest.Mock).mockResolvedValue('https://example.com/test_image.jpg');
-  
     await gameState['startNewGame']();
   
-    // Wait for asynchronous operations to complete before asserting
-    await new Promise(resolve => setTimeout(resolve, 0));
-  
-    // Await getState() to ensure all asynchronous operations inside it are completed
     const state = await gameState.getState();
   
     expect(state).toEqual({
@@ -68,13 +61,7 @@ describe('Test gameState initialises and functions as expected', () => {
   });
 
   it('handleLetterGuess handles correct guess', async () => {
-    (newRandomWord as jest.Mock).mockReturnValue('test');
-    // Mock searchImages to return a predefined URL
-    (searchImages as jest.Mock).mockResolvedValue('https://example.com/test_image.jpg');
     await gameState['startNewGame']();
-
-    // Wait for asynchronous operations to complete before asserting
-    await new Promise(resolve => setTimeout(resolve, 0));
 
     const response = await gameState.handleLetterGuess('t');
     expect(response.response).toBe('Well done! That\'s correct.');
@@ -82,13 +69,7 @@ describe('Test gameState initialises and functions as expected', () => {
   });
 
   it('handleLetterGuess handles incorrect guess', async () => {
-    (newRandomWord as jest.Mock).mockReturnValue('test');
-    // Mock searchImages to return a predefined URL
-    (searchImages as jest.Mock).mockResolvedValue('https://example.com/test_image.jpg');
     await gameState['startNewGame']();
-
-    // Wait for asynchronous operations to complete before asserting
-    await new Promise(resolve => setTimeout(resolve, 0));
 
     const response = await gameState.handleLetterGuess('x');
     expect(response.response).toBe('No, that\'s not correct.');
@@ -96,38 +77,20 @@ describe('Test gameState initialises and functions as expected', () => {
   });
 
   it('handleWordGuess handles correct guess', async () => {
-    (newRandomWord as jest.Mock).mockReturnValue('test');
-    // Mock searchImages to return a predefined URL
-    (searchImages as jest.Mock).mockResolvedValue('https://example.com/test_image.jpg');
     await gameState['startNewGame']();
-  
-    // Wait for asynchronous operations to complete before asserting
-    await new Promise(resolve => setTimeout(resolve, 0));
 
     const response = await gameState.handleWordGuess('test');
-
-    // Wait for asynchronous operations to complete before asserting
-    await new Promise(resolve => setTimeout(resolve, 0));
-
     expect(response.response).toBe('Well done! That\'s the correct word. A new word has been chosen.');
   });
 
   it('start method initializes the game', async () => {
-    (newRandomWord as jest.Mock).mockReturnValue('test');
-    // Mock searchImages to return a predefined URL
-    (searchImages as jest.Mock).mockResolvedValue('https://example.com/test_image.jpg');
-
     const response = await gameState.start();
-
-    // Wait for asynchronous operations to complete before asserting
-    await new Promise(resolve => setTimeout(resolve, 0));
-
     expect(response.response).toBe('Time to get guessing!');
     expect(gameState.getState().imageURL).toBe('https://example.com/test_image.jpg');
   });
 
-  it('getState returns the current state', () => {
-    const state = gameState.getState();
+  it('getState returns the current state', async () => {
+    const state = await gameState.getState();
     expect(state).toHaveProperty('correctLetters');
     expect(state).toHaveProperty('incorrectLetters');
     expect(state).toHaveProperty('guessNumber');

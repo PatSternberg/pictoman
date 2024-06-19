@@ -25,7 +25,7 @@ export async function searchImages(query: string) {
     );
 
     // Extract the first image URL from the response
-    console.log('First image URL:', response.data.items[0].link);
+    // console.log('First image URL:', response.data.items[0].link);
     return response.data.items[0].link;
   } catch (error) {
     // Return an empty string if there's an error

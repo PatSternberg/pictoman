@@ -1,3 +1,4 @@
+// file: pictoman/src/controllers/readWordsFromFile.ts
 import fs from 'fs';
 
 // Function to read words from file and return as an array
