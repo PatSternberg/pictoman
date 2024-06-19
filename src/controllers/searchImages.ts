@@ -1,3 +1,4 @@
+// file: pictoman/src/controllers/searchImages.ts
 import axios from 'axios';
 import * as dotenv from 'dotenv';
 
@@ -27,7 +28,8 @@ export async function searchImages(query: string) {
     console.log('First image URL:', response.data.items[0].link);
     return response.data.items[0].link;
   } catch (error) {
+    // Return an empty string if there's an error
     console.log('Error occurred during image search:', error);
-    return ''; // Return an empty string if there's an error
+    return '';
   }
 }
