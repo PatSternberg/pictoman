@@ -25,3 +25,7 @@ To run Pictoman in a development environment where changes will update in real t
 ## Building Pictoman
 
 To rebuild Pictoman, `cd` to `/pictoman` and run `npm run build`.
+
+## Testing Pictoman
+
+To run tests, `cd` to `/pictoman` and run `npm run test`.
