@@ -1,14 +1,17 @@
 // file: pictoman/tests/randomInclusiveNum.test.ts
+// Import function to test
 import { getRandomIntInclusive } from "../src/controllers/randomInclusiveNum";
 
-// Tests start here
+// Set up test suite
 describe('Test getRandomIntInclusive function', () => {
-  it('should return a number between 10 and 90 when given appropriate min and max numbers', () => {
-    for (let i = 0; i < 100; i++) { // Run the test 100 times
-      let test_num = getRandomIntInclusive(10, 90);
-      expect(test_num).toBeGreaterThanOrEqual(10);
-      expect(test_num).toBeLessThanOrEqual(90);
-    }
+  // Test returns expected number
+  it('should return a number between 40 and 60 when given appropriate min and max numbers', () => {
+    // Use for loop to run the test 100 times
+    for (let i = 0; i < 100; i++) {
+      let test_num = getRandomIntInclusive(40, 60);
+      expect(test_num).toBeGreaterThanOrEqual(40);
+      expect(test_num).toBeLessThanOrEqual(60);
+    };
   });
 
   // Test error handling
